@@ -1,10 +1,12 @@
-name: CI
+name: Release
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -77,13 +79,31 @@ jobs:
         run: |
           EXT=""
           if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
-          VERSION="${GITHUB_REF_NAME}"
-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then VERSION="${GITHUB_SHA::8}"; fi
-          go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" \
-            -o bin/informaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
+          go build -trimpath -ldflags "-s -w -X main.version=${{ github.ref_name }}" \
+            -o informaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: informaniak-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: bin/informaniak-*
+          path: informaniak-*
+
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" dist/* \
+            --title "${{ github.ref_name }}" \
+            --generate-notes
