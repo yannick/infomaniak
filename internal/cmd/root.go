@@ -29,6 +29,9 @@ func init() {
 	rootCmd.PersistentFlags().String("config", "", "config file (default $HOME/.informaniak.yaml)")
 	rootCmd.PersistentFlags().String("token", "", "Infomaniak API token")
 	rootCmd.PersistentFlags().String("account-id", "", "Infomaniak account ID")
+	rootCmd.PersistentFlags().Bool("json", false, "output as JSON")
+	rootCmd.PersistentFlags().Bool("simple", false, "output simplified plain text")
+	rootCmd.MarkFlagsMutuallyExclusive("json", "simple")
 
 	_ = viper.BindPFlag("token", rootCmd.PersistentFlags().Lookup("token"))
 	_ = viper.BindPFlag("account_id", rootCmd.PersistentFlags().Lookup("account-id"))

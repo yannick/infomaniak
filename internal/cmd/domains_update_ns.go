@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -53,6 +55,17 @@ func runDomainsUpdateNS(cmd *cobra.Command, args []string) error {
 
 	if err := client.UpdateNameservers(ctx, args[0], input); err != nil {
 		return fmt.Errorf("update nameservers: %w", err)
+	}
+
+	jsonOut, _ := cmd.Flags().GetBool("json")
+
+	if jsonOut {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		return enc.Encode(map[string]string{
+			"domain": args[0],
+			"status": "updated",
+		})
 	}
 
 	fmt.Printf("Nameservers for %s updated successfully.\n", args[0])

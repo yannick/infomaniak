@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -43,11 +44,26 @@ func runDomainsList(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("list domains: %w", err)
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "NAME\tTLD\tEXPIRES")
-	for _, d := range domains {
-		expires := time.Unix(d.ExpiresAt, 0).Format("2006-01-02")
-		fmt.Fprintf(w, "%s\t%s\t%s\n", d.Name, d.TLD, expires)
+	jsonOut, _ := cmd.Flags().GetBool("json")
+	simple, _ := cmd.Flags().GetBool("simple")
+
+	switch {
+	case jsonOut:
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		return enc.Encode(domains)
+	case simple:
+		for _, d := range domains {
+			fmt.Println(d.Name)
+		}
+		return nil
+	default:
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+		fmt.Fprintln(w, "NAME\tTLD\tEXPIRES")
+		for _, d := range domains {
+			expires := time.Unix(d.ExpiresAt, 0).Format("2006-01-02")
+			fmt.Fprintf(w, "%s\t%s\t%s\n", d.Name, d.TLD, expires)
+		}
+		return w.Flush()
 	}
-	return w.Flush()
 }

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -39,14 +40,27 @@ func runDomainsShow(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("show domain: %w", err)
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintf(w, "Name:\t%s\n", domain.Name)
-	fmt.Fprintf(w, "TLD:\t%s\n", domain.TLD)
-	fmt.Fprintf(w, "Premium:\t%v\n", domain.IsPremium)
-	fmt.Fprintf(w, "Created:\t%s\n", time.Unix(domain.CreatedAt, 0).Format("2006-01-02"))
-	fmt.Fprintf(w, "Expires:\t%s\n", time.Unix(domain.ExpiresAt, 0).Format("2006-01-02"))
-	fmt.Fprintf(w, "DNS Anycast:\t%v\n", domain.Options.DNSAnycast)
-	fmt.Fprintf(w, "DNSSEC:\t%v\n", domain.Options.DNSSEC)
-	fmt.Fprintf(w, "Domain Privacy:\t%v\n", domain.Options.DomainPrivacy)
-	return w.Flush()
+	jsonOut, _ := cmd.Flags().GetBool("json")
+	simple, _ := cmd.Flags().GetBool("simple")
+
+	switch {
+	case jsonOut:
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		return enc.Encode(domain)
+	case simple:
+		fmt.Println(domain.Name)
+		return nil
+	default:
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+		fmt.Fprintf(w, "Name:\t%s\n", domain.Name)
+		fmt.Fprintf(w, "TLD:\t%s\n", domain.TLD)
+		fmt.Fprintf(w, "Premium:\t%v\n", domain.IsPremium)
+		fmt.Fprintf(w, "Created:\t%s\n", time.Unix(domain.CreatedAt, 0).Format("2006-01-02"))
+		fmt.Fprintf(w, "Expires:\t%s\n", time.Unix(domain.ExpiresAt, 0).Format("2006-01-02"))
+		fmt.Fprintf(w, "DNS Anycast:\t%v\n", domain.Options.DNSAnycast)
+		fmt.Fprintf(w, "DNSSEC:\t%v\n", domain.Options.DNSSEC)
+		fmt.Fprintf(w, "Domain Privacy:\t%v\n", domain.Options.DomainPrivacy)
+		return w.Flush()
+	}
 }
