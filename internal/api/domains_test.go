@@ -12,17 +12,15 @@ func TestListDomains(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name      string
-		accountID string
-		response  Response[[]Domain]
-		status    int
-		wantLen   int
-		wantErr   bool
+		name     string
+		response Response[[]Domain]
+		status   int
+		wantLen  int
+		wantErr  bool
 	}{
 		{
-			name:      "success with domains",
-			accountID: "123",
-			status:    http.StatusOK,
+			name:   "success with domains",
+			status: http.StatusOK,
 			response: Response[[]Domain]{
 				Result: "success",
 				Data: []Domain{
@@ -33,16 +31,14 @@ func TestListDomains(t *testing.T) {
 			wantLen: 2,
 		},
 		{
-			name:      "empty list",
-			accountID: "456",
-			status:    http.StatusOK,
-			response:  Response[[]Domain]{Result: "success", Data: []Domain{}},
-			wantLen:   0,
+			name:     "empty list",
+			status:   http.StatusOK,
+			response: Response[[]Domain]{Result: "success", Data: []Domain{}},
+			wantLen:  0,
 		},
 		{
-			name:      "api error",
-			accountID: "999",
-			status:    http.StatusForbidden,
+			name:   "api error",
+			status: http.StatusForbidden,
 			response: Response[[]Domain]{
 				Result: "error",
 				Error:  &ErrorBody{Code: "forbidden", Description: "access denied"},
@@ -56,9 +52,8 @@ func TestListDomains(t *testing.T) {
 			t.Parallel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				wantPath := "/2/domains/accounts/" + tt.accountID + "/domains"
-				if r.URL.Path != wantPath {
-					t.Errorf("path = %q, want %q", r.URL.Path, wantPath)
+				if r.URL.Path != "/2/domains/domains" {
+					t.Errorf("path = %q, want %q", r.URL.Path, "/2/domains/domains")
 				}
 				if r.Method != http.MethodGet {
 					t.Errorf("method = %q, want GET", r.Method)
@@ -69,7 +64,7 @@ func TestListDomains(t *testing.T) {
 			t.Cleanup(srv.Close)
 
 			c := NewClient(ClientConfig{Token: "tok", BaseURL: srv.URL})
-			domains, err := c.ListDomains(context.Background(), tt.accountID)
+			domains, err := c.ListDomains(context.Background())
 
 			if tt.wantErr {
 				if err == nil {
@@ -125,7 +120,7 @@ func TestShowDomain(t *testing.T) {
 			t.Parallel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				wantPath := "/2/domains/" + tt.domain
+				wantPath := "/2/domains/domains/" + tt.domain
 				if r.URL.Path != wantPath {
 					t.Errorf("path = %q, want %q", r.URL.Path, wantPath)
 				}
@@ -194,7 +189,7 @@ func TestUpdateNameservers(t *testing.T) {
 			t.Parallel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				wantPath := "/2/domains/" + tt.domain + "/nameservers"
+				wantPath := "/2/domains/domains/" + tt.domain + "/nameservers"
 				if r.URL.Path != wantPath {
 					t.Errorf("path = %q, want %q", r.URL.Path, wantPath)
 				}

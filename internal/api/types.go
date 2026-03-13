@@ -23,9 +23,9 @@ type ErrorDetail struct {
 
 // Domain represents a domain returned by the Infomaniak API.
 type Domain struct {
-	ID        int            `json:"id"`
 	Name      string         `json:"name"`
 	TLD       string         `json:"tld"`
+	Status    []string       `json:"status"`
 	IsPremium bool           `json:"is_premium"`
 	CreatedAt int64          `json:"created_at"`
 	ExpiresAt int64          `json:"expires_at"`

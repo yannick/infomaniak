@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/yannick/informaniak/internal/api"
+	"github.com/yannick/infomaniak/internal/api"
 )
 
 var domainsListCmd = &cobra.Command{
@@ -29,17 +29,12 @@ func runDomainsList(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("token is required: set via --token, config file, or $INFOMANIAK_TOKEN")
 	}
 
-	accountID := viper.GetString("account_id")
-	if accountID == "" {
-		return fmt.Errorf("account-id is required: set via --account-id, config file, or $INFOMANIAK_ACCOUNT_ID")
-	}
-
 	client := api.NewClient(api.ClientConfig{Token: token})
 
 	ctx, cancel := context.WithTimeout(cmd.Context(), 30*time.Second)
 	defer cancel()
 
-	domains, err := client.ListDomains(ctx, accountID)
+	domains, err := client.ListDomains(ctx)
 	if err != nil {
 		return fmt.Errorf("list domains: %w", err)
 	}

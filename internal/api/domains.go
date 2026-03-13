@@ -7,18 +7,16 @@ import (
 	"fmt"
 )
 
-// ListDomains returns all domains for the given account.
-func (c *Client) ListDomains(ctx context.Context, accountID string) ([]Domain, error) {
-	path := fmt.Sprintf("/2/domains/accounts/%s/domains", accountID)
-
-	resp, err := c.doRequest(ctx, "GET", path, nil)
+// ListDomains returns all domains accessible by the current API token.
+func (c *Client) ListDomains(ctx context.Context) ([]Domain, error) {
+	resp, err := c.doRequest(ctx, "GET", "/2/domains/domains", nil)
 	if err != nil {
-		return nil, fmt.Errorf("list domains for account %s: %w", accountID, err)
+		return nil, fmt.Errorf("list domains: %w", err)
 	}
 
 	result, err := decodeResponse[[]Domain](resp)
 	if err != nil {
-		return nil, fmt.Errorf("list domains for account %s: %w", accountID, err)
+		return nil, fmt.Errorf("list domains: %w", err)
 	}
 
 	return result.Data, nil
@@ -26,7 +24,7 @@ func (c *Client) ListDomains(ctx context.Context, accountID string) ([]Domain, e
 
 // ShowDomain returns details for a single domain.
 func (c *Client) ShowDomain(ctx context.Context, domain string) (*Domain, error) {
-	path := fmt.Sprintf("/2/domains/%s", domain)
+	path := fmt.Sprintf("/2/domains/domains/%s", domain)
 
 	resp, err := c.doRequest(ctx, "GET", path, nil)
 	if err != nil {
@@ -43,7 +41,7 @@ func (c *Client) ShowDomain(ctx context.Context, domain string) (*Domain, error)
 
 // UpdateNameservers sets the nameservers for a domain.
 func (c *Client) UpdateNameservers(ctx context.Context, domain string, input UpdateNameserversInput) error {
-	path := fmt.Sprintf("/2/domains/%s/nameservers", domain)
+	path := fmt.Sprintf("/2/domains/domains/%s/nameservers", domain)
 
 	body, err := json.Marshal(input)
 	if err != nil {
