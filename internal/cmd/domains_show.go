@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/yannick/informaniak/internal/api"
+	"github.com/yannick/infomaniak/internal/api"
 )
 
 var domainsShowCmd = &cobra.Command{

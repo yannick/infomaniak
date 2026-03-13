@@ -80,10 +80,10 @@ jobs:
           VERSION="${GITHUB_REF_NAME}"
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then VERSION="${GITHUB_SHA::8}"; fi
           go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" \
-            -o bin/informaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
+            -o bin/infomaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: informaniak-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: bin/informaniak-*
+          name: infomaniak-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: bin/infomaniak-*

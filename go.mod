@@ -1,4 +1,4 @@
-module github.com/yannick/informaniak
+module github.com/yannick/infomaniak
 
 go 1.23.0
 

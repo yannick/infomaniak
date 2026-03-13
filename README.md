@@ -1,4 +1,4 @@
-# informaniak
+# infomaniak
 
 CLI tool to manage domains and nameservers via the [Infomaniak API](https://developer.infomaniak.com).
 
@@ -12,11 +12,11 @@ CLI tool to manage domains and nameservers via the [Infomaniak API](https://deve
 ### From source
 
 ```sh
-git clone https://github.com/yannick/informaniak.git
-cd informaniak
+git clone https://github.com/yannick/infomaniak.git
+cd infomaniak
 make deps
 make build
-# binary is at ./bin/informaniak
+# binary is at ./bin/infomaniak
 ```
 
 ### Install to GOPATH
@@ -27,15 +27,15 @@ make install
 
 ## Configuration
 
-informaniak reads configuration from three sources in this order of precedence:
+infomaniak reads configuration from three sources in this order of precedence:
 
 1. **CLI flags** (`--token`, `--account-id`)
 2. **Environment variables** (`INFOMANIAK_TOKEN`, `INFOMANIAK_ACCOUNT_ID`)
-3. **Config file** (`~/.informaniak.yaml` or `./.informaniak.yaml`)
+3. **Config file** (`~/.infomaniak.yaml` or `./.infomaniak.yaml`)
 
 ### Config file
 
-Create `~/.informaniak.yaml`:
+Create `~/.infomaniak.yaml`:
 
 ```yaml
 token: "your-api-token-here"
@@ -45,7 +45,7 @@ account_id: "12345"
 Or specify a custom path:
 
 ```sh
-informaniak --config /path/to/config.yaml domains list
+infomaniak --config /path/to/config.yaml domains list
 ```
 
 ### Environment variables
@@ -60,7 +60,7 @@ export INFOMANIAK_ACCOUNT_ID="12345"
 ### List domains
 
 ```sh
-informaniak domains list
+infomaniak domains list
 ```
 
 ```
@@ -73,7 +73,7 @@ me1337.net             net      2027-01-30
 ### Show domain details
 
 ```sh
-informaniak domains show example.ch
+infomaniak domains show example.ch
 ```
 
 ```
@@ -90,7 +90,7 @@ Domain Privacy:  false
 ### Update nameservers
 
 ```sh
-informaniak domains update-ns example.ch --nameservers ns1.example.ch,ns2.example.ch
+infomaniak domains update-ns example.ch --nameservers ns1.example.ch,ns2.example.ch
 ```
 
 ```
@@ -100,7 +100,7 @@ Nameservers for example.ch updated successfully.
 Use `--verify` to check nameserver availability before applying:
 
 ```sh
-informaniak domains update-ns example.ch --nameservers ns1.example.ch,ns2.example.ch --verify
+infomaniak domains update-ns example.ch --nameservers ns1.example.ch,ns2.example.ch --verify
 ```
 
 ## Output formats
@@ -116,7 +116,7 @@ Human-readable tabular output shown in the examples above.
 Full API response as pretty-printed JSON, useful for scripting with `jq`:
 
 ```sh
-informaniak domains list --json
+infomaniak domains list --json
 ```
 
 ```json
@@ -142,7 +142,7 @@ informaniak domains list --json
 Extract just domain names with `jq`:
 
 ```sh
-informaniak domains list --json | jq -r '.[].name'
+infomaniak domains list --json | jq -r '.[].name'
 ```
 
 ### Simple (`--simple`)
@@ -150,7 +150,7 @@ informaniak domains list --json | jq -r '.[].name'
 Plain domain names, one per line. Useful for piping to other tools:
 
 ```sh
-informaniak domains list --simple
+infomaniak domains list --simple
 ```
 
 ```
@@ -161,7 +161,7 @@ bar.ch
 Example — check DNS for all domains:
 
 ```sh
-informaniak domains list --simple | xargs -I{} dig +short {} NS
+infomaniak domains list --simple | xargs -I{} dig +short {} NS
 ```
 
 `--json` and `--simple` are mutually exclusive.

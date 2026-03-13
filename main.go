@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/yannick/informaniak/internal/cmd"
+	"github.com/yannick/infomaniak/internal/cmd"
 )
 
 // version is set at build time via -ldflags.

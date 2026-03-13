@@ -1,0 +1,3 @@
+# Infomaniak API token
+# Generate one at https://manager.infomaniak.com/v3/ng/accounts/token/list
+token: "your-api-token-here"

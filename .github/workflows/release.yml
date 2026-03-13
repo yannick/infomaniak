@@ -80,13 +80,13 @@ jobs:
           EXT=""
           if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
           go build -trimpath -ldflags "-s -w -X main.version=${{ github.ref_name }}" \
-            -o informaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
+            -o infomaniak-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: informaniak-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: informaniak-*
+          name: infomaniak-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: infomaniak-*
 
   release:
     needs: [build]

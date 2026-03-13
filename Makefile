@@ -1,5 +1,5 @@
-BINARY     := informaniak
-MODULE     := github.com/yannick/informaniak
+BINARY     := infomaniak
+MODULE     := github.com/yannick/infomaniak
 VERSION    ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS    := -trimpath -ldflags "-s -w -X main.version=$(VERSION)"
 GOFILES    := $(shell find . -name '*.go' -not -path './vendor/*')
